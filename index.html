@@ -1,0 +1,252 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>PFNSM Venues 2026</title>
+
+  <!-- PWA & Mobile Web App Meta Tags -->
+  <meta name="theme-color" content="#1e293b">
+  <meta name="mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  <meta name="apple-mobile-web-app-title" content="PFNSM 2026">
+  <meta name="application-name" content="PFNSM Venues 2026">
+  <meta name="msapplication-TileColor" content="#1e293b">
+
+  <!-- Manifest & Icons -->
+  <link rel="manifest" href="manifest.json">
+  <link rel="icon" type="image/png" sizes="192x192" href="icon-192.png">
+  <link rel="apple-touch-icon" href="icon-512.png">
+
+  <style>
+    * {
+      box-sizing: border-box;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background-color: #1e293b;
+      font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    }
+
+    /* Iframe a pantalla completa sin márgenes */
+    #app-frame {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100dvh;
+      border: 0;
+      z-index: 10;
+      background-color: #f8fafc;
+    }
+
+    /* Pantalla de carga inicial (Splash Screen) */
+    #splash-screen {
+      position: fixed;
+      inset: 0;
+      z-index: 50;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: radial-gradient(circle at center, #1e293b 0%, #0f172a 100%);
+      color: #ffffff;
+      transition: opacity 0.4s ease-out, visibility 0.4s ease-out;
+    }
+
+    #splash-screen.fade-out {
+      opacity: 0;
+      visibility: hidden;
+      pointer-events: none;
+    }
+
+    .splash-logo-container {
+      width: 110px;
+      height: 110px;
+      border-radius: 28px;
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 255, 255, 0.15);
+      padding: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      box-shadow: 0 20px 35px -10px rgba(0, 0, 0, 0.5);
+      margin-bottom: 24px;
+      animation: pulseLogo 2s infinite ease-in-out;
+    }
+
+    .splash-logo {
+      width: 100%;
+      height: 100%;
+      object-fit: contain;
+    }
+
+    .splash-title {
+      font-size: 1.35rem;
+      font-weight: 700;
+      letter-spacing: -0.02em;
+      margin: 0 0 6px 0;
+    }
+
+    .splash-subtitle {
+      font-size: 0.85rem;
+      color: #94a3b8;
+      margin: 0 0 28px 0;
+    }
+
+    .splash-spinner {
+      width: 36px;
+      height: 36px;
+      border: 3px solid rgba(255, 255, 255, 0.15);
+      border-top-color: #3b82f6;
+      border-radius: 50%;
+      animation: spin 0.8s linear infinite;
+    }
+
+    @keyframes spin {
+      to { transform: rotate(360deg); }
+    }
+
+    @keyframes pulseLogo {
+      0%, 100% { transform: scale(1); }
+      50% { transform: scale(1.04); }
+    }
+
+    /* Banner flotante de instalación PWA (cuando el navegador ofrece WebAPK) */
+    #install-banner {
+      position: fixed;
+      bottom: 24px;
+      left: 50%;
+      transform: translateX(-50%) translateY(120%);
+      z-index: 100;
+      background: #0f172a;
+      color: #ffffff;
+      padding: 12px 18px;
+      border-radius: 9999px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.6), 0 0 0 1px rgba(255, 255, 255, 0.15);
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      transition: transform 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+      cursor: pointer;
+      max-width: 90vw;
+    }
+
+    #install-banner.visible {
+      transform: translateX(-50%) translateY(0);
+    }
+
+    #install-banner button {
+      background: #2563eb;
+      color: white;
+      border: 0;
+      padding: 8px 16px;
+      border-radius: 9999px;
+      font-weight: 600;
+      font-size: 0.82rem;
+      cursor: pointer;
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Splash Screen Corporativo -->
+  <div id="splash-screen">
+    <div class="splash-logo-container">
+      <img src="icon-192.png" alt="PFNSM 2026" class="splash-logo">
+    </div>
+    <h1 class="splash-title">PFNSM Venues 2026</h1>
+    <p class="splash-subtitle">Iniciando sistema de gestión...</p>
+    <div class="splash-spinner"></div>
+  </div>
+
+  <!-- Iframe en pantalla completa que carga la aplicación en producción -->
+  <iframe
+    id="app-frame"
+    src="https://script.google.com/macros/s/AKfycbyM3tuAuiVKRy2GSoGfKA_7P51GSMJCjxCEUcQqYEcZpZy5h2gJmmFy3wwzC169iaV3EA/exec"
+    allow="geolocation; camera; microphone; clipboard-write; clipboard-read"
+    loading="eager"
+    title="PFNSM Venues 2026">
+  </iframe>
+
+  <!-- Banner de instalación WebAPK -->
+  <div id="install-banner">
+    <span style="font-size: 1.1rem;">📲</span>
+    <div style="font-size: 0.82rem;">
+      <strong>Instalar PFNSM Venues 2026</strong>
+      <div style="color: #94a3b8; font-size: 0.72rem;">Aplicación rápida en pantalla completa</div>
+    </div>
+    <button id="btn-install-pwa">Instalar</button>
+  </div>
+
+  <script>
+    // 1. Ocultar splash screen cuando el iframe cargue
+    const appFrame = document.getElementById('app-frame');
+    const splashScreen = document.getElementById('splash-screen');
+
+    function hideSplashScreen() {
+      if (splashScreen) {
+        splashScreen.classList.add('fade-out');
+        setTimeout(() => {
+          splashScreen.style.display = 'none';
+        }, 450);
+      }
+    }
+
+    appFrame.addEventListener('load', hideSplashScreen);
+    // Timeout de seguridad en caso de red lenta
+    setTimeout(hideSplashScreen, 4000);
+
+    // 2. Registro de Service Worker para cumplimiento PWA
+    if ('serviceWorker' in navigator) {
+      window.addEventListener('load', () => {
+        navigator.serviceWorker.register('./sw.js')
+          .then((reg) => console.log('✓ Service Worker PWA registrado:', reg.scope))
+          .catch((err) => console.warn('Aviso: Registro de SW fallido:', err));
+      });
+    }
+
+    // 3. Captura del evento beforeinstallprompt nativo de Android / Chrome
+    let deferredPrompt = null;
+    const installBanner = document.getElementById('install-banner');
+    const installBtn = document.getElementById('btn-install-pwa');
+
+    const isStandalone = window.matchMedia('(display-mode: standalone)').matches ||
+                         window.navigator.standalone === true;
+
+    window.addEventListener('beforeinstallprompt', (e) => {
+      // Prevenir el banner automático para mostrar nuestro banner estilizado
+      e.preventDefault();
+      deferredPrompt = e;
+
+      if (!isStandalone && installBanner) {
+        installBanner.classList.add('visible');
+      }
+    });
+
+    if (installBtn) {
+      installBtn.addEventListener('click', async () => {
+        if (!deferredPrompt) return;
+        deferredPrompt.prompt();
+        const { outcome } = await deferredPrompt.userChoice;
+        console.log('Respuesta del usuario para instalar PWA:', outcome);
+        deferredPrompt = null;
+        installBanner.classList.remove('visible');
+      });
+    }
+
+    window.addEventListener('appinstalled', () => {
+      console.log('✓ PFNSM Venues 2026 instalada exitosamente como PWA nativa.');
+      if (installBanner) installBanner.classList.remove('visible');
+    });
+  </script>
+</body>
+</html>
+
