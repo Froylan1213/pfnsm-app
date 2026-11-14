@@ -1,4 +1,4 @@
-const CACHE_NAME = 'pfnsm-venues-pwa-v1';
+const CACHE_NAME = 'pfnsm-venues-pwa-v3';
 const STATIC_ASSETS = [
   './',
   './index.html',
@@ -37,14 +37,21 @@ self.addEventListener('fetch', (event) => {
   if (url.includes('script.google.com') || url.includes('googleusercontent.com')) {
     return;
   }
-  
+
+  // Network-first strategy so updates to index.html and manifest.json apply immediately
   event.respondWith(
-    caches.match(event.request).then((cachedResponse) => {
-      if (cachedResponse) {
-        return cachedResponse;
-      }
-      return fetch(event.request);
-    })
+    fetch(event.request)
+      .then((networkResponse) => {
+        if (networkResponse && networkResponse.status === 200 && event.request.method === 'GET') {
+          const responseClone = networkResponse.clone();
+          caches.open(CACHE_NAME).then((cache) => {
+            cache.put(event.request, responseClone);
+          });
+        }
+        return networkResponse;
+      })
+      .catch(() => {
+        return caches.match(event.request);
+      })
   );
 });
-
